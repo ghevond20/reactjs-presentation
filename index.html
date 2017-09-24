@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Promise presentation</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="bower_components/reveal.js/css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="bower_components/reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+        <section>
+            <h2>React JS</h2>
+
+            <p>
+               <small>
+                   Created by Ghevond Ghazaryan<br/>
+                   Email: ghevond20@gmail.com
+               </small>
+           </p>
+        </section>
+
+        <section>
+            <section>
+                <h2>Node Package Manager (npm)</h2>
+                <pre><code>npm --version
+npm install < package >
+npm install -g < package >
+</code></pre>
+            </section>
+            <section>
+                <h2>Package.json</h2>
+                <pre><code>{
+  "name": "my-first-app",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
+      </code></pre>
+            </section>
+
+            <section>
+                <h2>Package.json</h2>
+                  <pre><code>npm install grunt --save</code></pre>
+                <pre><code>{
+  "name": "my-first-app",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "grunt": "^0.4.5"
+  }
+}
+      </code></pre>
+            </section>
+            <section>
+                <h2>Package.json</h2>
+                  <pre><code>npm install gulp --save-dev</code></pre>
+                <pre><code>{
+  "name": "my-first-app",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "grunt": "^0.4.5"
+  },
+  "devDependencies": {
+    "gulp": "^3.6.2"
+  }
+}
+      </code></pre>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>How to install reactJs</h2>
+                <pre><code>npm install -g create-react-app
+
+create-react-app hello-world
+
+npm start  </code></pre>
+            </section>
+
+
+
+        </section>
+        <section>
+          <section>
+            <h2>Create React Component</h2>
+
+              <pre><code>import React, { Component } from 'react'
+
+class App extends Component {
+
+}
+export default App</code></pre>
+</section>
+<section>
+    <h2>Render</h2>
+
+      <pre><code>import React, { Component } from 'react'
+
+class App extends Component {
+  render() {
+    return <div>Hello world</div>;
+  }
+}
+export default App;
+</code></pre>
+</section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Dropdown Component</h2>
+
+                <pre><code>import React, { Component } from 'react';
+
+class Dropdown extends Component {
+  render() {
+    return <div>Its dropdown baby</div>;
+  }
+}
+
+export default Dropdown;</code></pre>
+            </section>
+            <section>
+                <small>Import Component in app.js</small>
+                <pre><code>import React, { Component } from 'react';
+
+import Dropdown from './Dropdown.js';
+
+class App extends Component {
+  render() {
+    return (
+      <div>
+        < Dropdown />
+      </div>
+    );
+  }
+}
+
+export default App;</code></pre>
+
+
+            </section>
+            <section>
+                <h5>Dropdown Component constructor</h5>
+
+                <pre><code>import React, { Component } from 'react';
+
+class Dropdown extends Component {
+  constructor(props) {
+      super(props);
+      this.state = { isOpened: false };
+  }
+
+  render() {
+    return <div>Its dropdown baby</div>;
+  }
+}
+
+export default Dropdown;</code></pre>
+            </section>
+            <section>
+                <small>Dropdown Component add OnClick event</small>
+
+                <pre><code>import React, { Component } from 'react';
+
+class Dropdown extends Component {
+  constructor(props) {
+      super(props);
+      this.state = { isOpened: false };
+  }
+
+  toggleState() {
+    this.setState({ isOpened: !this.state.isOpened });
+  }
+
+  render() {
+    console.log('isOpened', this.state.isOpened);
+    return  <div onClick={this.toggleState}>
+              Its dropdown baby
+            </div>;
+  }
+}
+
+export default Dropdown;</code></pre>
+            </section>
+            <section>
+                <h5>bind this</h5>
+
+                <pre><code>render() {
+  console.log('isOpened', this.state.isOpened);
+  return <div onClick={this.toggleState.bind(this)}>Its dropdown baby</div>;
+}</code></pre>
+            </section>
+
+            <section>
+                <h5>Change Render</h5>
+
+                <pre><code>render() {
+  console.log('isOpened', this.state.isOpened);
+  let dropdownText;
+  if (this.state.isOpened) {
+    dropdownText = <div>Here is what is shown in dropdown</div>;
+  }
+  return (
+      <div onClick={this.toggleState.bind(this)}>
+        Its dropdown baby
+        {dropdownText}
+      </div>
+  );
+}</code></pre>
+            </section>
+        </section>
+
+
+
+    </section>
+
+        <section>
+            <section>
+                <h2>Header Component</h2>
+
+                <pre><code>import React, { Component } from 'react';
+
+class Header extends Component {
+  render() {
+    return (
+      <div>
+        {this.props.items.map((item, index) =>
+          <a href={item.link} key={index}>{item.label}</a>
+        )}
+      </div>
+    );
+  }
+}
+
+export default Header;</code></pre>
+            </section>
+            <section>
+                <h2>Change App component </h2>
+
+                  <pre><code>import React, { Component } from 'react';
+
+import Header from './Header';
+const menu = [
+  {
+    link: '/articles',
+    label: 'Articles'
+  },
+  {
+    link: '/contacts',
+    label: 'Contacts'
+  },
+  {
+    link: '/posts',
+    label: 'Posts'
+  }
+];
+class App extends Component {
+  render() {
+    return (
+      <div>
+        < Header items={menu} />
+      </div>
+    );
+  }
+}
+
+export default App;</code></pre>
+            </section>
+
+
+        </section>
+        <section style="text-align: left;">
+            <h1>THE END</h1>
+
+            <p>
+                - <a href="https://github.com/ghevond20/Promise">Source</a>
+            </p>
+        </section>
+
+    </div>
+
+</div>
+
+<script src="bower_components/reveal.js/lib/js/head.min.js"></script>
+<script src="bower_components/reveal.js/js/reveal.js"></script>
+
+<script>
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+            {
+                src: 'bower_components/reveal.js/lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            }
+            },
+            {
+                src: 'bower_components/reveal.js/plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            }
+            },
+            {
+                src: 'bower_components/reveal.js/plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            }
+            },
+            {
+                src: 'bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function () {
+                return !!document.querySelector('pre code');
+            }, callback: function () {
+                hljs.initHighlightingOnLoad();
+            }
+            },
+            {src: 'bower_components/reveal.js/plugin/zoom-js/zoom.js', async: true},
+            {src: 'bower_components/reveal.js/plugin/notes/notes.js', async: true}
+        ]
+    });
+
+</script>
+
+</body>
+</html>

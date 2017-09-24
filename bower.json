@@ -1,0 +1,20 @@
+{
+  "name": "es6-presentation",
+  "version": "0.0.1",
+  "description": "ES6 fetures",
+  "main": "index.html",
+  "authors": [
+    "Ghevond Ghazaryan"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "reveal.js": "~3.1.0"
+  }
+}

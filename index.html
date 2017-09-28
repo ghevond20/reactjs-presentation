@@ -321,6 +321,245 @@ export default App;</code></pre>
 
 
         </section>
+        <section >
+          <section >
+            <h3>React.Component</h3>
+      <h5>The Component Lifecycle</h5>
+            <small>
+        Each component has several "lifecycle methods" that you can override to run code at particular times in the process. Methods prefixed with <b><i>will</i></b> are called right before something happens, and methods prefixed with <b><i>did</i></b> are called right after something happens.
+            </small>
+            </section>
+
+        </section>
+        <section>
+          <section >
+              <h5>Component Mounting</h5>
+                      <small>
+          These methods are called when an instance of a component is being created
+              </small>
+              <ul>
+              <li>  constructor()</li>
+              <li>  componentWillMount()</li>
+              <li>  render()</li>
+              <li>  componentDidMount()</li>
+            </ul>
+          </section>
+
+          <section >
+              <h5>constructor()</h5>
+            <p>  <small>
+              The constructor for a React component is called before it is mounted. When implementing the constructor for a React.Component subclass, you should call super(props) before any other statement. Otherwise, this.props will be undefined in the constructor, which can lead to bugs.
+            </small></p>
+              <p>   <small>
+            The constructor is the right place to initialize state. If you don't initialize state and you don't bind methods, you don't need to implement a constructor for your React component.
+          </small></p>
+                <p> <small>
+              It's okay to initialize state based on props. This effectively "forks" the props and sets the state with the initial props. Here's an example of a valid React.Component subclass constructor:
+            </small>  </p>
+            <pre><code>constructor(props) {
+  super(props);
+  this.state = {
+    color: props.initialColor
+  };
+}              </code></pre>
+
+          </section>
+          <section >
+              <h5>componentWillMount()</h5>
+            <p>  <small>
+              componentWillMount() is invoked immediately before mounting occurs. It is called before render(), therefore setting state synchronously in this method will not trigger a re-rendering. Avoid introducing any side-effects or subscriptions in this method.
+            </small></p>
+              <p><small>
+                This is the only lifecycle hook called on server rendering. Generally, we recommend using the constructor() instead.
+          </small></p>
+
+            <pre><code>class Person extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { mode: undefined } ;
+  }
+
+  componentWillMount() {
+    let mode;
+    if (this.props.age > 70) {
+      mode = 'old';
+    } else if (this.props.age < 18) {
+      mode = 'young';
+    } else {
+      mode = 'middle';
+    }
+    this.setState({ mode });
+  }
+
+  render() {
+    return (
+    <div>
+      { this.props.name } (age: { this.props.age })
+    </div>
+    );
+  }
+}
+export default Person;
+          </code></pre>
+          <p><small>
+          In the example above we call this.setState() and update our current state before render. If we need state values on calculations passed in props, this is where we should do the logic.
+          </small></p>
+          </section>
+          <section >
+              <h5>render()</h5>
+                  <pre><code>render() {
+  // BAD: Do not do this!
+  this.setState({ foo: 'bar' });
+  return (
+    <div>
+    { this.props.name } (age: { this.props.age })
+    </div>
+  );
+}</code></pre>
+
+          </section>
+          <section >
+              <h5>componentDidMount()</h5>
+                  <p><small>
+          componentDidMount() is invoked immediately after a component is mounted. Initialization that requires DOM nodes should go here. If you need to load data from a remote endpoint, this is a good place to instantiate the network request. Setting state in this method will trigger a re-rendering.
+                  </small></p>
+
+          </section>
+        </section>
+        <section >
+        <section >
+            <h5>Component Updating</h5>
+                    <small>
+      An update can be caused by changes to props or state. These methods are called when a component is being re-rendered:
+            </small>
+            <ul>
+            <li>  componentWillReceiveProps()</li>
+            <li>  shouldComponentUpdate()</li>
+            <li>  componentWillUpdate()()</li>
+            <li>  render()</li>
+            <li>  componentDidUpdate()</li>
+          </ul>
+        </section>
+        <section >
+            <h5>componentWillReceiveProps()</h5>
+                <p><small>
+        Now that we have discussed starting an Update, let's dive into the Update life cycle methods. The first method available to us is componentWillReceiveProps(). This method is called when props are passed to the Component instance. Let's dig a little deeper into what this means.
+                </small></p>
+                <pre><code>export class UserInfoComponent extends Component {
+  constructor(props){
+    super(props);
+    this.state = {user: this.props.user}
+  }
+
+  componentWillReceiveProps(nextProps){
+    this.setState({user: nextProps.user})
+  }
+
+  render() {
+    if(this.state.user)
+    return (
+      <h1>{this.state.user.firstName}</h1>
+    );
+
+    return (
+      <h1>loading</h1>
+    )
+  }
+}</code></pre>
+
+        </section>
+        <section >
+            <h5>shouldComponentUpdate()</h5>
+                <p><small>
+        The next method in the Update life cycle is shouldComponentUpdate(). This method allows your Component to exit the Update life cycle if there is no reason to apply a new render. Out of the box, the shouldComponentUpdate() is a no-op that returns true. This means every time we start an Update in a Component, we will re-render.
+                </small></p>
+                <pre><code>class CounterButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {count: 1};
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.color !== nextProps.color) {
+      return true;
+    }
+    if (this.state.count !== nextState.count) {
+      return true;
+    }
+    return false;
+  }
+
+  render() {
+    return (
+      <button
+        color={this.props.color}
+        onClick={() => this.setState(state => ({count: state.count + 1}))}>
+        Count: {this.state.count}
+      </button>
+    );
+  }
+}</code></pre>
+
+        </section>
+        <section >
+            <h5>componentWillUpdate()</h5>
+                <p><small>
+        componentWillUpdate() is invoked immediately before rendering when new props or state are being received. Use this as an opportunity to perform preparation before an update occurs. This method is not called for the initial render.
+                </small></p>
+                <p><small>Note that you cannot call this.setState() here. If you need to update state in response to a prop change, use componentWillReceiveProps() instead.</small></p>
+                <pre><code>// dispatching an action based on state change
+componentWillUpdate(nextProps, nextState) {
+  if (nextState.open == true && this.state.open == false) {
+    this.props.onWillOpen();
+  }
+}</code></pre>
+<p><small>componentWillUpdate() will not be invoked if shouldComponentUpdate() returns false.</small></p>
+        </section>
+        <section >
+            <h5>componentWillUpdate()</h5>
+                <p><small>
+        componentDidUpdate() is invoked immediately after updating occurs. This method is not called for the initial render.
+                </small></p>
+                <p><small>Use this as an opportunity to operate on the DOM when the component has been updated. This is also a good place to do network requests as long as you compare the current props to previous props (e.g. a network request may not be necessary if the props have not changed).</small></p>
+                <pre><code>componentDidUpdate(prevProps, prevState) {
+  // BAD: DO NOT DO THIS!!!
+  let height = ReactDOM.findDOMNode(this).offsetHeight;
+  this.setState({ internalHeight: height });
+}</code></pre>
+<pre><code>componentDidUpdate(prevProps, prevState) {
+  // One possible fix...
+  let height = ReactDOM.findDOMNode(this).offsetHeight;
+  if (this.state.height !== height ) {
+    this.setState({ internalHeight: height });
+  }
+}</code></pre>
+<p><small>componentDidUpdate() will not be invoked if shouldComponentUpdate() returns false.</small></p>
+        </section>
+  </section>
+        <section >
+            <h3>State & Props</h3>
+
+            <small>
+Every component has a <b>state</b> object and a <b>props</b> object. State is set using the <b>setState</b> method. Calling setState triggers UI updates and is the bread and butter of React's interactivity.</br></br>
+            </small>
+            <small>
+When we use our defined components, we can add attributes called props. These attributes are available in our component as this.props and can be used in our render method to render dynamic data:
+            </small>
+        </section>
+        <section >
+            <h3>Lifecycle Methods</h3>
+
+            <small>
+            <p>Here are some lifecycle methods in React you should know:<br></p>
+              <ul>
+              <li>  componentWillMount - Invoked once, on both client & server before rendering occurs.</li>
+              <li>  componentDidMount - Invoked once, only on the client, after rendering occurs.</li>
+              <li>  shouldComponentUpdate - Return value determines whether component should update.</li>
+              <li>  componentWillUnmount - Invoked prior to unmounting component.</li>
+            </ul>
+            </small>
+
+        </section>
         <section style="text-align: left;">
             <h1>THE END</h1>
 

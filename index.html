@@ -547,18 +547,62 @@ When we use our defined components, we can add attributes called props. These at
             </small>
         </section>
         <section >
-            <h3>Lifecycle Methods</h3>
+          <section >
+            <h3>Other APIs</h3>
 
             <small>
-            <p>Here are some lifecycle methods in React you should know:<br></p>
+            <p>Each component also provides some other APIs:<br></p>
               <ul>
-              <li>  componentWillMount - Invoked once, on both client & server before rendering occurs.</li>
-              <li>  componentDidMount - Invoked once, only on the client, after rendering occurs.</li>
-              <li>  shouldComponentUpdate - Return value determines whether component should update.</li>
-              <li>  componentWillUnmount - Invoked prior to unmounting component.</li>
+              <li> setState()</li>
+              <li> forceUpdate()</li>
             </ul>
             </small>
+          </section>
+          <section >
+            <h3>forceUpdate()</h3>
 
+            <small>
+            <p>By default, when your component’s state or props change, your component will re-render. If your render() method depends on some other data, you can tell React that the component needs re-rendering by calling forceUpdate().</p>
+          </br><p>Calling forceUpdate() will cause render() to be called on the component, skipping shouldComponentUpdate(). This will trigger the normal lifecycle methods for child components, including the shouldComponentUpdate() method of each child. React will still only update the DOM if the markup changes.</p>
+                    </br><p>Normally you should try to avoid all uses of forceUpdate() and only read from this.props and this.state in render().</p>
+
+            </small>
+          </section>
+        </section>
+
+        <section >
+          <section >
+            <h3>Class Properties</h3>
+
+            <small>
+            <p>defaultProps can be defined as a property on the component class itself, to set the default props for the class. This is used for undefined props, but not for null props. For example:<br></p>
+            <pre><code>class CustomButton extends Component {
+  // ...
+}
+
+CustomButton.defaultProps = {
+  color: 'blue'
+};</code></pre>
+<p>If props.color is not provided, it will be set by default to 'blue':</p>
+<pre><code>render() {
+      return < CustomButton /> ; // props.color will be set to blue
+    }</code></pre>
+    <p>If props.color is set to null, it will remain null:</p>
+    <pre><code>render() {
+    return < CustomButton color={null} /> ; // props.color will remain null
+  }</code></pre>
+            </small>
+          </section>
+          <section >
+            <h3>forceUpdate()</h3>
+
+            <small>
+            <p>By default, when your component’s state or props change, your component will re-render. If your render() method depends on some other data, you can tell React that the component needs re-rendering by calling forceUpdate().</p>
+          </br><p>Calling forceUpdate() will cause render() to be called on the component, skipping shouldComponentUpdate(). This will trigger the normal lifecycle methods for child components, including the shouldComponentUpdate() method of each child. React will still only update the DOM if the markup changes.</p>
+                    </br><p>Normally you should try to avoid all uses of forceUpdate() and only read from this.props and this.state in render().</p>
+
+            </small>
+          </section>
         </section>
         <section style="text-align: left;">
             <h1>THE END</h1>

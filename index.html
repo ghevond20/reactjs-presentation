@@ -593,13 +593,99 @@ CustomButton.defaultProps = {
   }</code></pre>
             </small>
           </section>
+
+        </section>
+        <section >
           <section >
-            <h3>forceUpdate()</h3>
+            <h3>EventEmitter</h3>
 
             <small>
-            <p>By default, when your component’s state or props change, your component will re-render. If your render() method depends on some other data, you can tell React that the component needs re-rendering by calling forceUpdate().</p>
-          </br><p>Calling forceUpdate() will cause render() to be called on the component, skipping shouldComponentUpdate(). This will trigger the normal lifecycle methods for child components, including the shouldComponentUpdate() method of each child. React will still only update the DOM if the markup changes.</p>
-                    </br><p>Normally you should try to avoid all uses of forceUpdate() and only read from this.props and this.state in render().</p>
+            <p>Facebook's EventEmitter is a simple emitter implementation that prioritizes speed and simplicity. It is conceptually similar to other emitters like Node's EventEmitter, but the precise APIs differ. More complex abstractions like the event systems used on facebook.com and m.facebook.com can be built on top of EventEmitter as well DOM event systems.<br></p>
+<h5>API Concepts</h5>
+<p>EventEmitter's API shares many concepts with other emitter APIs. When events are emitted through an emitter instance, all listeners for the given event type are invoked.</p></br>
+            <pre><code>var emitter = new EventEmitter();
+emitter.addListener('event', function(x, y) { console.log(x, y); });
+emitter.emit('event', 5, 10);  // Listener prints "5 10".</code></pre>
+
+            </small>
+          </section>
+          <section >
+            <h3>Usage</h3>
+
+            <small>
+            <p>First install the fbemitter package via npm, then you can require or import it.<br></p>
+
+            <pre><code>var {EventEmitter} = require('fbemitter');
+var emitter = new EventEmitter();</code></pre>
+
+            </small>
+          </section>
+          <section >
+            <h3>addListener(eventType, callback)</h3>
+
+            <small>
+            <p>Register a specific callback to be called on a particular event. A token is returned that can be used to remove the listener.<br></p>
+
+            <pre><code>var token = emitter.addListener('change', (...args) => {
+  console.log(...args);
+});
+
+emitter.emit('change', 10); // 10 is logged
+token.remove();
+emitter.emit('change', 10); // nothing is logged</code></pre>
+
+            </small>
+          </section>
+          <section >
+            <h3>once(eventType, callback)</h3>
+
+            <small>
+            <p>Similar to addListener() but the callback is removed after it is invoked once. A token is returned that can be used to remove the listener.<br></p>
+
+            <pre><code>var token = emitter.once('change', (...args) => {
+  console.log(...args);
+});
+
+emitter.emit('change', 10); // 10 is logged
+emitter.emit('change', 10); // nothing is logged</code></pre>
+
+            </small>
+          </section>
+          <section >
+            <h3>removeAllListeners(eventType)</h3>
+
+            <small>
+            <p>Removes all of the registered listeners. eventType is optional, if provided only listeners for that event type are removed.<br></p>
+
+            <pre><code>var token = emitter.addListener('change', (...args) => {
+  console.log(...args);
+});
+
+emitter.removeAllListeners();
+emitter.emit('change', 10); // nothing is logged</code></pre>
+
+            </small>
+          </section>
+          <section >
+            <h3>listeners(eventType)</h3>
+
+            <small>
+            <p>Return an array of listeners that are currently registered for the given event type.<br></p>
+
+
+            </small>
+          </section>
+          <section >
+            <h3>emit(eventType, ...args)</h3>
+
+            <small>
+            <p>Emits an event of the given type with the given data. All callbacks that are listening to the particular event type will be notified.<br></p>
+
+            <pre><code>var token = emitter.addListener('change', (...args) => {
+  console.log(...args);
+});
+
+emitter.emit('change', 10); // 10 is logged</code></pre>
 
             </small>
           </section>

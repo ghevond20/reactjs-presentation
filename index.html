@@ -690,6 +690,197 @@ emitter.emit('change', 10); // 10 is logged</code></pre>
             </small>
           </section>
         </section>
+        <section >
+            <section >
+          <h3>Refs and the DOM</h3>
+
+          <small>
+          <p>In the typical React dataflow, props are the only way that parent components interact with their children. To modify a child, you re-render it with new props. However, there are a few cases where you need to imperatively modify a child outside of the typical dataflow. The child to be modified could be an instance of a React component, or it could be a DOM element. For both of these cases, React provides an escape hatch.<br></p>
+          </small>
+            </section>
+              <section >
+                <h3>When to Use Refs</h3>
+                <small>
+<p>There are a few good use cases for refs:</p>
+                  <ul>
+                  <li>Managing focus, text selection, or media playback.</li>
+                  <li>Triggering imperative animations.</li>
+                  <li>Integrating with third-party DOM libraries.</li>
+                </ul>
+                <p>For example, instead of exposing open() and close() methods on a Dialog component, pass an isOpen prop to it.</p>
+                </small>
+              </section>
+              <section >
+                <h3>Adding a Ref to a DOM Element</h3>
+                <small>
+<p>React supports a special attribute that you can attach to any component. The ref attribute takes a callback function, and the callback will be executed immediately after the component is mounted or unmounted.</p>
+
+  <p>When the ref attribute is used on an HTML element, the ref callback receives the underlying DOM element as its argument. For example, this code uses the ref callback to store a reference to a DOM node:</p>
+
+              <pre><code>class CustomTextInput extends React.Component {
+        constructor(props) {
+          super(props);
+          this.focusTextInput = this.focusTextInput.bind(this);
+        }
+
+        focusTextInput() {
+          // Explicitly focus the text input using the raw DOM API
+          this.textInput.focus();
+        }
+
+        render() {
+          // Use the `ref` callback to store a reference to the text input DOM
+          // element in an instance field (for example, this.textInput).
+          return (
+            <div>
+              <input
+                type="text"
+                ref={(input) => { this.textInput = input; }} />
+
+              <input
+                type="button"
+                value="Focus the text input"
+                onClick={this.focusTextInput}
+              />
+            </div>
+          );
+        }
+}
+              </code></pre>
+                </small>
+              </section>
+              <section >
+                <h3>Adding a Ref to a Class Component</h3>
+                <small>
+<p>When the ref attribute is used on a custom component declared as a class, the ref callback receives the mounted instance of the component as its argument. For example, if we wanted to wrap the CustomTextInput above to simulate it being clicked immediately after mounting:</p>
+                </small>
+                <pre><code>class AutoFocusTextInput extends React.Component {
+    componentDidMount() {
+      this.textInput.focusTextInput();
+    }
+
+    render() {
+      return (
+        < CustomTextInput
+          ref={(input) => { this.textInput = input; }} />
+
+      );
+    }
+  }
+                </code></pre>
+              </section>
+              <section >
+                <h3>Refs and Functional Components</h3>
+
+                <small>
+                <p>You may not use the ref attribute on functional components because they don’t have instances:<br></p>
+
+                <pre><code>function MyFunctionalComponent() {
+  return < input />;
+}
+
+class Parent extends React.Component {
+  render() {
+    // This will *not* work!
+    return (
+      < MyFunctionalComponent
+        ref={(input) => { this.textInput = input; }} />
+    );
+  }
+}</code></pre>
+</section>
+<section >
+  <h3>REFS AND FUNCTIONAL COMPONENTS</h3>
+<p>You should convert the component to a class if you need a ref to it, just like you do when you need lifecycle methods or state.</p>
+<p>You can, however, use the ref attribute inside a functional component as long as you refer to a DOM element or a class component:</p>
+<pre><code>function CustomTextInput(props) {
+  // textInput must be declared here so the ref callback can refer to it
+  let textInput = null;
+
+  function handleClick() {
+    textInput.focus();
+  }
+  return (
+    <div>
+      <input
+        type="text"
+        ref={(input) => { textInput = input; }} />
+
+      <input
+        type="button"
+        value="Focus the text input"
+        onClick={handleClick}
+      />
+    </div>
+  );
+}</code></pre>
+
+                </small>
+              </section>
+              <section >
+                  <small>
+                <h3>Exposing DOM Refs to Parent Components</h3>
+
+
+                <p>In rare cases, you might want to have access to a child’s DOM node from a parent component. This is generally not recommended because it breaks component encapsulation, but it can occasionally be useful for triggering focus or measuring the size or position of a child DOM node.<br></p>
+                <p>While you could add a ref to the child component, this is not an ideal solution, as you would only get a component instance rather than a DOM node. Additionally, this wouldn’t work with functional components.<br></p>
+                <p>This works both for classes and for functional components.</p>
+
+                <pre><code>function CustomTextInput(props) {
+  return (
+    <div>
+      <input ref={props.inputRef} />
+    </div>
+  );
+}
+
+class Parent extends React.Component {
+  render() {
+    return (
+      < CustomTextInput
+        inputRef={el => this.inputElement = el}
+      />
+    );
+  }
+}</code></pre>
+
+
+                </small>
+              </section>
+              <section >
+                  <small>
+                <h3>Exposing DOM Refs to Parent Components</h3>
+                <pre><code>function CustomTextInput(props) {
+  return (
+    <div>
+      < input ref={props.inputRef} />
+    </div>
+  );
+}
+
+function Parent(props) {
+  return (
+    <div>
+      My input: < CustomTextInput inputRef={props.inputRef} />
+    </div>
+  );
+}
+
+
+class Grandparent extends React.Component {
+  render() {
+    return (
+      < Parent
+        inputRef={el => this.inputElement = el}
+      />
+    );
+  }
+}</code></pre>
+
+
+                </small>
+              </section>
+        </section>
         <section style="text-align: left;">
             <h1>THE END</h1>
 

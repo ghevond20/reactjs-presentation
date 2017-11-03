@@ -882,6 +882,223 @@ class Grandparent extends React.Component {
               </section>
         </section>
         <section style="text-align: left;">
+          <section style="text-align: center;">
+              <h4>Actions</h4>
+              <small><p>First, let's define some actions.</p>
+
+<p>Actions are payloads of information that send data from your application to your store. They are the only source of information for the store. You send them to the store using store.dispatch().</p>
+
+<p>Here's an example action which represents adding a new todo item:</p></small>
+          <pre><code>const ADD_TODO = 'ADD_TODO'
+{
+  type: ADD_TODO,
+  text: 'Build my first Redux app'
+}          </code></pre>
+          <small><p>
+          Actions are plain JavaScript objects. Actions must have a type property that indicates the type of action being performed. Types should typically be defined as string constants. Once your app is large enough, you may want to move them into a separate module.</p></small>
+<pre><code>import { ADD_TODO, REMOVE_TODO } from '../actionTypes'</code></pre>
+          </section>
+          <section style="text-align: center;">
+              <h4>Action Creators</h4>
+              <small><p>Action creators are exactly that—functions that create actions. It's easy to conflate the terms “action” and “action creator,” so do your best to use the proper term.</p>
+<p>In Redux, action creators simply return an action:</p></small>
+          <pre><code>function addTodo(text) {
+  return {
+    type: ADD_TODO,
+    text
+  }
+}</code></pre>
+          <small><p>
+            This makes them portable and easy to test. In traditional Flux, action creators often trigger a dispatch when invoked, like so:</p></small>
+<pre><code>function addTodoWithDispatch(text) {
+  const action = {
+    type: ADD_TODO,
+    text
+  }
+  dispatch(action)
+}</code></pre>
+          </section>
+          <section style="text-align: center;">
+              <h4>dispatch</h4>
+              <small><p>In Redux this is not the case.</p>
+<p>Instead, to actually initiate a dispatch, pass the result to the dispatch() function:</p></small>
+          <pre><code>dispatch(addTodo(text))
+dispatch(completeTodo(index))</code></pre>
+          <small><p>Alternatively, you can create a bound action creator that automatically dispatches:</p></small>
+<pre><code>const boundAddTodo = text => dispatch(addTodo(text))
+const boundCompleteTodo = index => dispatch(completeTodo(index))</code></pre>
+<small><p>Now you'll be able to call them directly:</p></small>
+<pre><code>boundAddTodo(text)
+boundCompleteTodo(index)</code></pre>
+<small><p>  The dispatch() function can be accessed directly from the store as store.dispatch(), but more likely you'll access it using a helper like react-redux's connect(). You can use bindActionCreators() to automatically bind many action creators to a dispatch() function.</p>
+  <p>Action creators can also be asynchronous and have side-effects. You can read about async actions in the advanced tutorial to learn how to handle AJAX responses and compose action creators into async control flow. Don't skip ahead to async actions until you've completed the basics tutorial, as it covers other important concepts that are prerequisite for the advanced tutorial and async actions.</p></small>
+          </section>
+            <section style="text-align: center;">
+              <pre><code>import {connect} from 'react-redux'
+
+const TodoItem = ({todo, destroyTodo}) => {
+  return (
+    <div>
+      {todo.text}
+      <span onClick={destroyTodo}> x </span>
+    </div>
+  )
+}
+
+const mapStateToProps = state => {
+  return {
+    todo : state.todos[0]
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    destroyTodo : () => dispatch({
+      type : 'DESTROY_TODO'
+    })
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoItem)</code></pre>
+              </section>
+                <section style="text-align: center;">
+                    <h4>Reducers</h4>
+                    <small><p>Actions describe the fact that something happened, but don't specify how the application's state changes in response. This is the job of reducers.</p>
+                      <h5>Handling Actions</h5>
+<p>Now that we've decided what our state object looks like, we're ready to write a reducer for it. The reducer is a pure function that takes the previous state and an action, and returns the next state.</p>
+<pre><code>(previousState, action) => newState</code></pre>
+<p>It's called a reducer because it's the type of function you would pass to Array.prototype.reduce(reducer, ?initialValue). It's very important that the reducer stays pure. Things you should never do inside a reducer:</p>
+<ul>
+  <li>Mutate its arguments;</li>
+  <li>Perform side effects like API calls and routing transitions;</li>
+  <li>Call non-pure functions, e.g. Date.now() or Math.random().  </li></ul>
+</small>
+                  </section>
+
+                  <section style="text-align: center;">
+                      <small><p>We'll start by specifying the initial state. Redux will call our reducer with an undefined state for the first time. This is our chance to return the initial state of our app:</p>
+                      <pre><code>import { VisibilityFilters } from './actions'
+
+const initialState = {
+  visibilityFilter: VisibilityFilters.SHOW_ALL,
+  todos: []
+}
+
+function todoApp(state, action) {
+  if (typeof state === 'undefined') {
+    return initialState
+  }
+
+  // For now, don't handle any actions
+  // and just return the state given to us.
+  return state
+}</code></pre>
+<p>One neat trick is to use the ES6 default arguments syntax to write this in a more compact way:</p><pre><code>function todoApp(state = initialState, action) {
+  // For now, don't handle any actions
+  // and just return the state given to us.
+  return state
+}</code></pre>
+  </small>
+                    </section>
+
+
+                    <section style="text-align: center;">
+                        <small><p>Now let's handle SET_VISIBILITY_FILTER. All it needs to do is to change visibilityFilter on the state. Easy:</p>
+                        <pre><code>function todoApp(state = initialState, action) {
+  switch (action.type) {
+    case SET_VISIBILITY_FILTER:
+      return Object.assign({}, state, {
+        visibilityFilter: action.filter
+      })
+    default:
+      return state
+  }
+}</code></pre>
+<p>
+Note that:
+</p>
+<ul>
+<li>We don't mutate the state. We create a copy with Object.assign(). Object.assign(state, { visibilityFilter: action.filter }) is also wrong: it will mutate the first argument. You must supply an empty object as the first parameter. You can also enable the object spread operator proposal to write { ...state, ...newState } instead.</li>
+
+<li>We return the previous state in the default case. It's important to return the previous state for any unknown action.</li></ul>
+    </small>
+                      </section>
+                      <section style="text-align: center;">
+                        <h4>combineReducers(reducers)</h4>
+
+                          <pre><code>import { combineReducers } from 'redux'
+
+const todoApp = combineReducers({
+  visibilityFilter,
+  todos
+})
+
+export default todoApp</code></pre>
+      <pre><code>import { combineReducers } from 'redux'
+import * as reducers from './reducers'
+
+const todoApp = combineReducers(reducers)</code></pre></small>
+                        </section>
+                        <section style="text-align: center;">
+                          <h4>Store</h4>
+<small><p>In the previous sections, we defined the actions that represent the facts about “what happened” and the reducers that update the state according to those actions.</p>
+<p>The Store is the object that brings them together. The store has the following responsibilities:</p>
+<ul>
+<li>Holds application state;</li>
+<li>Allows access to state via getState();</li>
+<li>Allows state to be updated via dispatch(action);</li>
+<li>Registers listeners via subscribe(listener);</li>
+<li>Handles unregistering of listeners via the function returned by subscribe(listener).</li></ul>
+                            <p>It's important to note that you'll only have a single store in a Redux application. When you want to split your data handling logic, you'll use reducer composition instead of many stores.</p>
+<p>It's easy to create a store if you have a reducer. In the previous section, we used combineReducers() to combine several reducers into one. We will now import it, and pass it to createStore().</p>
+        <pre><code>import { createStore } from 'redux'
+import todoApp from './reducers'
+let store = createStore(todoApp)</code></pre></small>
+                          </section>
+                          <section style="text-align: center;">
+                            <h4>Dispatching Actions</h4>
+  <small><p>Now that we have created a store, let's verify our program works! Even without any UI, we can already test the update logic.</p>
+          <pre><code>import {
+  addTodo,
+  toggleTodo,
+  setVisibilityFilter,
+  VisibilityFilters
+} from './actions'
+
+// Log the initial state
+console.log(store.getState())
+
+// Every time the state changes, log it
+// Note that subscribe() returns a function for unregistering the listener
+const unsubscribe = store.subscribe(() =>
+  console.log(store.getState())
+)
+
+// Dispatch some actions
+store.dispatch(addTodo('Learn about actions'))
+store.dispatch(addTodo('Learn about reducers'))
+store.dispatch(addTodo('Learn about store'))
+store.dispatch(toggleTodo(0))
+store.dispatch(toggleTodo(1))
+store.dispatch(setVisibilityFilter(VisibilityFilters.SHOW_COMPLETED))
+
+// Stop listening to state updates
+unsubscribe()</code></pre></small>
+                            </section>
+                            <section style="text-align: center;">
+                            <a href="http://redux.js.org/docs/basics/ExampleTodoList.html" target="_blank">Example: Todo List</a></section>
+          <section style="text-align: left;">
+              <h1>THE END</h1>
+
+              <p>
+                  - <a href="https://github.com/ghevond20/Promise">Source</a>
+              </p>
+          </section>
+        </section>
+        <section style="text-align: left;">
             <h1>THE END</h1>
 
             <p>
